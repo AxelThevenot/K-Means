@@ -1,5 +1,3 @@
-[Work in progress...]
-
 ## K-Means principle
 
 Partitioning into k-means is a data partitioning method and a combinatorial optimization problem. Given points and an integer k, the problem is to divide the points into k groups, often called clusters, in order to minimize a certain function. We consider the distance from a point to the average of the points of its cluster; the function to minimize is the sum of the squares of these distances. It is a classical heuristic used for a lot of applications. The k-means method is an approximation algorithm.
