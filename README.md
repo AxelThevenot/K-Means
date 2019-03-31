@@ -21,12 +21,22 @@ For a given k, the k-means algorithm tends to find the k bests centroids. The ce
 
 ## Pseudo Code
 
-
 ```
+For a given integer k and a data set of samples
 
+Choose k centroids arbitrarily or randomly
+
+While the convergence is not reached
+
+          Assign to each samples the nearest centroid
+          
+          Update each centroid as the mean of the samples, which are assigned to the centroid
 ```
 
 ## Let's start with python for the k-means algorithm
+
+
+Firstly we need to import  numpy to deal with array or matrix, sklearn to generate artificialy a data set and we need to import matplotib for the render.
 
 ### Import
 
@@ -43,9 +53,9 @@ import matplotlib.patches as mpatches  # to add legends easily
 ### Variables
 
 As usual I made a region to change the variables to an easier understanding. Variables that can be manually changed are those, which are in uppercases. They are classed as variables for : 
-* 
-* 
-* 
+* K-means algotithm
+* Elbow method
+* Rendering 
 
 ```python
 # K-means variables
@@ -75,6 +85,9 @@ colors = {0: '#FF00FF', 1: '#999999', 2: '#2F9599', 3: 'red', 4: 'blue',
 
 ### Load dataset
 
+To begin with the k-means algorithm we will simply generate randomly a data set. Generate an artificial data set is a key to deal with algorithms for a data scientist. Here the data set we generate is fully composed of samples of 2 dimensions with variable's value between 0 and 30. It is an arbitrary choice to generate value in [0, 30] but I choose to have 2 dimensionnal samples to plot easily the render. 
+
+
 ```python
 def load_dataset():
     """
@@ -87,7 +100,7 @@ def load_dataset():
 
 ### K-means algorithm
 
-
+To deal with the K-means algorithm, we need to create the `euclidean_distance()` to calculate the distance between the samples to a given centroid. The function takes two arguments : the X matrix of samples (and their coordinates) and the coordinates array of the given centroid. It returns the array of each distance between the samples a the centroid.
 
 ```python
 def euclidean_distance(X, centroid):
@@ -102,8 +115,8 @@ def euclidean_distance(X, centroid):
     # Return the euclidean distance value
     return coord_difference_to_square.sum(axis=1, keepdims=True)**0.5
 ```
-
-
+The first step of the k-means method is to find the nearest centroids for each point. The `nearest_centroid()` fucntion seeks to do this step. It finds the nearests centroid for each samples and returns their respective number as an array. It takes two arguments : the X matrix of samples and the array of centroids (and their coordinates so it is a matrix in fact).
+ 
 ```python
 def nearest_centroid(X, centroids):
     """
@@ -123,8 +136,7 @@ def nearest_centroid(X, centroids):
     return np.argmin(dist_to_centroids, axis=1) - 1 # - 1 as the first index if the unused fulled-'inf' array
 ```
 
-
-
+Then, we need to update each centroid as the mean of the samples, which are assigned to the centroid. The `adjust_centroid()` fucntion calculates the new coordinates of the centroids and returns them takes three arguments : the X matrix of samples, the array of the nearest centroid for each samples given by the `nearest_centroid()` function and the array of currrent centroids to update.
 
 ```python
 def adjust_centroid(X, nearest_centroid_array, current_centroids):
@@ -148,6 +160,8 @@ def adjust_centroid(X, nearest_centroid_array, current_centroids):
     return current_centroids
 ```
 
+The `calculate_cost()` calculates the cost of the current iteration, which is the sum of each euclidean distance between each centroid an its associated sampels.
+
 ```python
 def calculate_cost(X, current_centroids):
     """
@@ -169,7 +183,11 @@ def calculate_cost(X, current_centroids):
     # Return the sum of min values of euclidean distances for each samples to the centroids
     return sum(np.amin(dist_to_centroids, axis=1))
 ```
+At last we create the `k_means()` function, which will run the algorithm while the convergence is not reached.
 
+This function is a little special as it will be called by the matplotlib.animation object. That's why there is the argument `frame_number` which is incremented each time the function is called. In this program, we will activate the k-means algorithm by pressing the Enter key. Only when the key will be pressed, the `k_means()` will run the algorithm.
+
+As you may have seen, the `display()` is not written yet. I addition to that, the function, which links the Enter key to the start is also not written. I will be next.
 
 ```python
 def k_means(frame_number):
@@ -199,7 +217,7 @@ def k_means(frame_number):
 ```
 ### Display
 
-
+That is the time to add the `display()` function to render the algorithm. It only shows the samples values and waits for the Enter key too to display the logistic regression curve. It takes for argument the iteration number of the algorithm, which will be indicated in the legend of the plot.
 
 ```python
 def display(iteration=0):
@@ -275,9 +293,30 @@ if __name__ == '__main__':
 
 ## Let's start with python for the elbow method
 
+There is no theorical method to find what k value is the best choice to run the k-means algorithm with a certain data set. To overcome this, the elbow method is useful. It simply calculates the cost of the algorithm at the convergence iteration for a range of k. A good choice of k is the value which is at the elbow of the curve. As an example on the graph below, a good choice of k is 4 or 5.
+
+![elbow method](src/elbow_method.png)
+
+## Pseudo Code
+
+```
+For a given integer k_max and a data set of samples
+
+For each k from 1 to k_max
+          
+          Run the k-means algorithm until convergence
+          
+          Calculate the cost for this k value
+          
+Plot the cost values for the range of k 
+
+Infer that a good k value is the value which is at the elbow of the curve
+```
 
 
 ### Elbow method
+
+The `elbow_method()` function will run the k-means algorithm for a range of k from 1 to `K_MAX` as argument and calculates the cost at the convergence iteration. It will next plot the curve by calling the `display_elbow()` function written below.
 
 ```python
 def elbow_method(k_max=K_MAX):
@@ -311,7 +350,7 @@ def elbow_method(k_max=K_MAX):
 
 ### Display
 
-
+The `display_elbow()` plot the elbow method curve. It takes as argument the array of calculated costs.
 
 ```python
 def display_elbow(cost_array):
@@ -319,7 +358,7 @@ def display_elbow(cost_array):
     Display the elbow method algorithm
     :param cost_array: array of cost for each k
     """
-    fig_elbow = None  # to plot the elbow method
+    fig_elbow = plt.figure(2)  # to plot the elbow method
     ax_elbow = fig_elbow.add_subplot(1, 1, 1)  # the axes of the elbow method graph
 
     # set the labels to describe the plot
@@ -352,7 +391,9 @@ if __name__ == '__main__':
 
 ## Ratatouille
 
+We can know use this algorithm to limit the color of an image to a number of k. As you may have understand the k colors will be the k centroids calculated with the k-means algorithm. In this case, the samples are the pixels and their variables are the color red, blue and green, which both have a value between 0 and 255.
 
+In the Ratatouille image there are 30173 different colors at start. The goal is to find the k centroids of colors to recolor the image with those only k colors. With only 16 colors we can recreate the image with a very limited loss. 
 
 ```python
 import matplotlib.pyplot as plt
@@ -360,6 +401,8 @@ import matplotlib.image as mpimg
 import numpy as np
 import k_means as km
 ```
+
+Work as the next case at the difference that we give a value `EPSILON` to stop the converge when the difference of cost from an iteraton to the next. 
 
 ```python
 IMAGE = mpimg.imread('image.jpg')  # pick up the image as a matrix of pixel
@@ -403,5 +446,4 @@ for i, k in enumerate(K_TO_TEST):
     plt.imshow(new_image)
 
 plt.show()
-
 ```
