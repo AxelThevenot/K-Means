@@ -228,7 +228,7 @@ def display_elbow(cost_array):
     Display the elbow method algorithm
     :param cost_array: array of cost for each k
     """
-    fig_elbow = None  # to plot the elbow method
+    fig_elbow = plt.figure(2)  # to plot the elbow method
     ax_elbow = fig_elbow.add_subplot(1, 1, 1)  # the axes of the elbow method graph
 
     # set the labels to describe the plot
