@@ -6,7 +6,7 @@
 
 ## K-Means application
 
-
+![Ratatouille example](src/ratatouille.png)
 
 ## Pseudo Code
 
