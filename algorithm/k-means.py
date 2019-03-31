@@ -32,8 +32,6 @@ first_frame = -1  # indicates the first frame number to know the current iterati
 # choose the color respectively to the centroids (add color to have more than K = 10)
 colors = {0: '#FF00FF', 1: '#999999', 2: '#2F9599', 3: 'red', 4: 'blue',
           5: 'yellow', 6: 'pink', 7: 'orange', 8: 'brown', 9: 'purple'}
-fig_elbow = plt.figure(2)  # to plot the elbow method
-ax_elbow = fig_elbow.add_subplot(1, 1, 1)  # the axes of the elbow method graph
 # endregion
 
 
@@ -230,6 +228,8 @@ def display_elbow(cost_array):
     Display the elbow method algorithm
     :param cost_array: array of cost for each k
     """
+    fig_elbow = plt.figure(2)  # to plot the elbow method
+    ax_elbow = fig_elbow.add_subplot(1, 1, 1)  # the axes of the elbow method graph
 
     # set the labels to describe the plot
     ax_elbow.set_title('Elbow method for k to 1 to' + str(K_MAX))
