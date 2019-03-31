@@ -4,24 +4,24 @@ import numpy as np
 import k_means as km
 
 
-image = mpimg.imread('image.jpg')  # pick up the image as a matrix of pixel
-pixels = np.concatenate(image[:][:])  # all the pixels of the image in an array
+IMAGE = mpimg.imread('image.jpg')  # pick up the image as a matrix of pixel
+pixels = np.concatenate(IMAGE[:][:])  # all the pixels of the image in an array
 
-epsilon = 1000  # to test convergence
-k_to_test = np.array([2, 4, 8, 16])  # k to test have to be at number of 4 with this script !!
+EPSILON = 1000  # to test convergence
+K_TO_TEST = np.array([1, 2, 3, 4])  # k to test have to be at number of 4 with this script !!
 
 fig = plt.figure(figsize=(8, 8))
 
 print(np.unique(pixels, axis=0).shape[0])  # number of different colors on the image
-for i, k in enumerate(k_to_test):
+for i, k in enumerate(K_TO_TEST):
     iteration = 0
 
     centroids = np.random.rand(k, 3) * 256
     # Initialize a value to keep the last cost value to know when there is a convergence
     last_cost = 0
-    cost = epsilon + 1  # make sure to start the while loop
+    cost = EPSILON + 1  # make sure to start the while loop
     # Update the centroid while not convergence
-    while not abs(cost - last_cost) < epsilon:  # np.array_equal(centroids, last_centroids):
+    while not abs(cost - last_cost) < EPSILON:
         print('iteration  {0}... '.format(iteration + 1))
         # keep the current cost before the adjustments to know if there is a convergence
         last_cost = cost
@@ -39,7 +39,7 @@ for i, k in enumerate(k_to_test):
     # create the pixel array
     new_image = np.array([centroids[number] for _, number in enumerate(nearest)])
     # reform the image
-    new_image = new_image.reshape(image.shape).astype(int)
+    new_image = new_image.reshape(IMAGE.shape).astype(int)
     # plot it
     fig.add_subplot(2, 2, i + 1)
     plt.imshow(new_image)

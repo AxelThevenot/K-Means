@@ -99,6 +99,27 @@ def adjust_centroid(X, nearest_centroid_array, current_centroids):
     return current_centroids
 
 
+def calculate_cost(X, current_centroids):
+    """
+    Calculation the cost with the current centroids
+    :param X: matrix of sample coordinates
+    :param current_centroids: current centroids
+    :return: cost of the k_means step
+    """
+    # Work as the the nearest_centroid() method
+    # but return the sum of min values of euclidean distances for each samples to the centroids
+    # (not the array of indexes of nearest centroid for each sample )
+
+    # Create an array
+    # (used to be stacked with arrays of euclidean distances from each sample to each centroid)
+    dist_to_centroids = np.full((X.shape[0], 1), float('inf'))
+    for i, centroid in enumerate(current_centroids):
+        # Stack the distance arrays to form a matrix
+        dist_to_centroids = np.hstack((dist_to_centroids, euclidean_distance(X, centroid)))
+    # Return the sum of min values of euclidean distances for each samples to the centroids
+    return sum(np.amin(dist_to_centroids, axis=1))
+
+
 def k_means(frame_number):
     """
     K-means algorithm (main function)
@@ -123,27 +144,6 @@ def k_means(frame_number):
             nearest = nearest_centroid(X, centroids)
             # adjust the current centroids
             centroids = adjust_centroid(X, nearest, centroids)
-
-
-def calculate_cost(X, current_centroids):
-    """
-    Calculation the cost with the current centroids
-    :param X: matrix of sample coordinates
-    :param current_centroids: current centroids
-    :return: cost of the k_means step
-    """
-    # Work as the the nearest_centroid() method
-    # but return the sum of min values of euclidean distances for each samples to the centroids
-    # (not the array of indexes of nearest centroid for each sample )
-
-    # Create an array
-    # (used to be stacked with arrays of euclidean distances from each sample to each centroid)
-    dist_to_centroids = np.full((X.shape[0], 1), float('inf'))
-    for i, centroid in enumerate(current_centroids):
-        # Stack the distance arrays to form a matrix
-        dist_to_centroids = np.hstack((dist_to_centroids, euclidean_distance(X, centroid)))
-    # Return the sum of min values of euclidean distances for each samples to the centroids
-    return sum(np.amin(dist_to_centroids, axis=1))
 # endregion
 
 
